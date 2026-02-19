@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+<% if (typeof user !== 'undefined' && user) { %>
+    <nav class="navbar">
+        <a href="/dashboard" class="nav-brand">⚡ NodeKit</a>
+        <div class="nav-links">
+            <a href="/dashboard">Dashboard</a>
+            <a href="/files">Files</a>
+            <a href="/network">Network</a>
+            <span class="nav-user">👤 <%= user.username %> (<%= user.role %>)</span>
+            <a href="/logout" class="btn-logout">Logout</a>
+        </div>
+    </nav>
+<% } %>
+
+<main class="container">

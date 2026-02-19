@@ -1,0 +1,114 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+    <h1>🌐 Network Tools</h1>
+    <p>Server network info, DNS lookup, and TCP port checker</p>
+</div>
+
+<div class="grid-2">
+
+    <div class="card">
+        <h2>🖥️ Server Network Interfaces</h2>
+        <table class="info-table">
+            <thead>
+                <tr><th>Interface</th><th>Family</th><th>Address</th><th>Type</th></tr>
+            </thead>
+            <tbody>
+                <% ipList.forEach(function(ip) { %>
+                    <tr>
+                        <td><code><%= ip.interface %></code></td>
+                        <td><span class="badge <%= ip.family === 'IPv4' ? 'badge-admin' : 'badge-user' %>">
+                            <%= ip.family %></span>
+                        </td>
+                        <td><code><%= ip.address %></code></td>
+                        <td><%= ip.internal ? '🔁 Loopback' : '🌍 External' %></td>
+                    </tr>
+                <% }) %>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>📨 Your HTTP Request</h2>
+        <table class="info-table">
+            <tr><th>Your IP</th><td><code><%= requestInfo.clientIP %></code></td></tr>
+            <tr><th>Protocol</th><td><code><%= requestInfo.protocol %></code></td></tr>
+            <tr><th>Hostname</th><td><code><%= requestInfo.hostname %></code></td></tr>
+            <tr><th>Method</th><td><code><%= requestInfo.method %></code></td></tr>
+            <tr><th>URL</th><td><code><%= requestInfo.url %></code></td></tr>
+            <tr>
+                <th>User-Agent</th>
+                <td><code class="truncate"><%= requestInfo.headers['user-agent'] %></code></td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<div class="grid-2 mt-2">
+
+    <div class="card">
+        <h2>🔍 DNS Lookup</h2>
+        <p class="card-desc">Resolve hostname to IP address.</p>
+
+        <div class="form-group">
+            <input type="text" id="dnsInput" placeholder="google.com" value="google.com">
+        </div>
+        <button onclick="dnsLookup()" class="btn-primary">Lookup</button>
+        <pre id="dnsResult" class="result-box">Results will appear here...</pre>
+
+        <script>
+            async function dnsLookup() {
+                const hostname = document.getElementById('dnsInput').value.trim();
+                const box = document.getElementById('dnsResult');
+                box.textContent = 'Looking up ' + hostname + '...';
+                try {
+                    const res  = await fetch('/network/dns/' + encodeURIComponent(hostname));
+                    const data = await res.json();
+                    box.textContent = JSON.stringify(data, null, 2);
+                } catch(e) {
+                    box.textContent = 'Error: ' + e.message;
+                }
+            }
+        </script>
+    </div>
+
+    <div class="card">
+        <h2>📡 TCP Port Checker</h2>
+        <p class="card-desc">Check if a TCP port is open.</p>
+
+        <div class="form-group">
+            <input type="text" id="tcpHost" placeholder="host" value="localhost">
+        </div>
+        <div class="form-group">
+            <input type="number" id="tcpPort" placeholder="port" value="4000">
+        </div>
+        <button onclick="tcpCheck()" class="btn-primary">Check Port</button>
+        <pre id="tcpResult" class="result-box">Results will appear here...</pre>
+
+        <script>
+            async function tcpCheck() {
+                const host = document.getElementById('tcpHost').value.trim();
+                const port = document.getElementById('tcpPort').value.trim();
+                const box  = document.getElementById('tcpResult');
+                box.textContent = `Checking ${host}:${port}...`;
+                try {
+                    const res  = await fetch(`/network/tcpcheck?host=${host}&port=${port}`);
+                    const data = await res.json();
+                    box.textContent = JSON.stringify(data, null, 2);
+                } catch(e) {
+                    box.textContent = 'Error: ' + e.message;
+                }
+            }
+        </script>
+    </div>
+
+</div>
+
+<div class="card mt-2">
+    <h2>📚 TCP Echo Server (port 4000)</h2>
+    <p>A raw TCP server is running alongside Express.</p>
+    <pre class="result-box">nc localhost 4000</pre>
+</div>
+
+<%- include('partials/footer') %>

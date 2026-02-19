@@ -1,0 +1,52 @@
+<%- include('partials/header') %>
+
+<div class="auth-card">
+    <h1>🔐 NodeKit Login</h1>
+    <p class="subtitle">Sign in to access the portal</p>
+
+    <% if (error) { %>
+        <div class="alert alert-error">
+            ⚠️ <%= error %>
+        </div>
+    <% } %>
+
+    <% if (success) { %>
+        <div class="alert alert-success">
+            ✅ <%= success %>
+        </div>
+    <% } %>
+
+    <form action="/login" method="POST">
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username"
+                   placeholder="ahmed / user / guest" required>
+        </div>
+
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password"
+                   placeholder="1234 / pass / guest" required>
+        </div>
+
+        <button type="submit" class="btn-primary">Sign In</button>
+    </form>
+
+    <div class="hint-box">
+        <strong>Demo Accounts:</strong>
+        <% const accounts = [
+            { user: 'ahmed',   pass: '1234',  role: 'admin' },
+            { user: 'user',  pass: 'pass',  role: 'user'  },
+            { user: 'guest', pass: 'guest', role: 'guest' }
+        ]; %>
+
+        <% accounts.forEach(function(acc) { %>
+            <div class="account-row">
+                <code><%= acc.user %> / <%= acc.pass %></code>
+                <span class="badge badge-<%= acc.role %>"><%= acc.role %></span>
+            </div>
+        <% }) %>
+    </div>
+</div>
+
+<%- include('partials/footer') %>

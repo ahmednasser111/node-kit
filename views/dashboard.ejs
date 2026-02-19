@@ -1,0 +1,67 @@
+<%- include('partials/header') %>
+
+<div class="page-header">
+    <h1>👋 Welcome, <%= user.username %>!</h1>
+    <p>You are logged in as <strong><%= user.role %></strong></p>
+</div>
+
+<div class="grid-3">
+
+    <div class="card">
+        <h2>🍪 Your Session Cookie</h2>
+        <p class="card-desc">Session data decoded from cookie.</p>
+        <table class="info-table">
+            <tr><th>Username</th><td><%= user.username %></td></tr>
+            <tr><th>Role</th><td><span class="badge badge-<%= user.role %>"><%= user.role %></span></td></tr>
+            <tr><th>Login Time</th><td><%= new Date(user.loginTime).toLocaleString() %></td></tr>
+        </table>
+    </div>
+
+    <div class="card">
+        <h2>🔍 All Cookies on Request</h2>
+        <p class="card-desc">Parsed cookies from request:</p>
+
+        <% const cookieKeys = Object.keys(cookies); %>
+        <% if (cookieKeys.length === 0) { %>
+            <p>No cookies found.</p>
+        <% } else { %>
+            <% cookieKeys.forEach(function(key) { %>
+                <div class="cookie-row">
+                    <span class="cookie-key"><%= key %></span>
+                    <code class="cookie-val"><%= String(cookies[key]).substring(0, 40) %>...</code>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+
+    <div class="card">
+        <h2>⚡ Server Info</h2>
+        <table class="info-table">
+            <tr><th>Server Time</th><td><%= serverTime %></td></tr>
+            <tr><th>Node Version</th><td><%= process.version %></td></tr>
+            <tr><th>Platform</th><td><%= process.platform %></td></tr>
+            <tr><th>Memory Used</th>
+                <td><%= Math.round(process.memoryUsage().heapUsed / 1024 / 1024) %> MB</td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<div class="grid-2 mt-2">
+
+    <div class="card card-action">
+        <h2>📁 File Manager</h2>
+        <p>Upload files, download, or delete (admin only).</p>
+        <a href="/files" class="btn-primary">Go to Files →</a>
+    </div>
+
+    <div class="card card-action">
+        <h2>🌐 Network Tools</h2>
+        <p>View server IP addresses, DNS lookup, and TCP port checker.</p>
+        <a href="/network" class="btn-primary">Go to Network →</a>
+    </div>
+
+</div>
+
+<%- include('partials/footer') %>
